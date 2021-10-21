@@ -2,9 +2,10 @@ from tkinter import *
 from dataclasses import dataclass
 from typing import *
 from enum import Enum
-from shapes import *
 from action import Action
-from drawing_commands import on_line_drawing, create_line, line_drawing_complete
+from drawing_commands import *
+from moving_commands import *
+from changing_commands import *
 from app_context import AppContext
 import uuid
 import logging
@@ -17,9 +18,9 @@ LOGGER = logging.getLogger("main")
 APP_CONTEXT = AppContext()
 
 class ActionType(Enum):
-    PENCIL = Action(create_line, on_line_drawing, line_drawing_complete)
-    MOVE = Action(create_line, on_line_drawing, line_drawing_complete)
-    CHANGE = Action(create_line, on_line_drawing, line_drawing_complete)
+    PENCIL = Action(create_line, on_line_drawing, line_drawing_complete )
+    MOVE = Action(move_line, on_line_moving, line_moving_complete)
+    CHANGE = Action(change_line, on_line_changing, line_changing_complete)
     
 def keyPressHandler(event):
     print(event.char, 'код =', event.keycode)
@@ -44,26 +45,27 @@ def mouseMotionHandler(event):
 def mouseButton3PressHandler(event):
     canv = event.widget
 
-def actvate_mode(current_action: ActionType):
+def actvate_mode(current_action: ActionType, cursor_type: str):
+    APP_CONTEXT.canvas.config(cursor = cursor_type)
     APP_CONTEXT.current_action = current_action
 
 if __name__=="__main__":
     tk = Tk()
     tk.resizable(0,0)
     
-    APP_CONTEXT.canvas = Canvas(tk, bg = 'white', cursor = 'pencil')
+    APP_CONTEXT.canvas = Canvas(tk, bg = 'white', cursor = 'arrow')
     pencil_img = PhotoImage(file = r"pencil.png")
     move_img = PhotoImage(file = r"move.png")
     change_img = PhotoImage(file = r"regular.png")
 
-    button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL))
+    button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
     # button_create['command'] = lambda: APP_CONTEXT.current_mode = Actions.PENCIL
 
 
-    button_move = Button(image=move_img, width=100, height=100)
+    button_move = Button(image=move_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MOVE, "fleur"))
     # button_create['command'] = lambda: APP_CONTEXT.current_mode = Actions.MOVE 
 
-    button_change = Button(image=change_img, width=100, height=100)
+    button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
 
     APP_CONTEXT.canvas["width"] = 600
     APP_CONTEXT.canvas["height"] = 600
