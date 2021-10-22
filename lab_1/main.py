@@ -33,17 +33,15 @@ def mouseButton1PressHandler(event):
 
 def mouseButton1ReleaseHandler(event):
     if event.widget is APP_CONTEXT.canvas:
-        if APP_CONTEXT.current_action:
-            APP_CONTEXT.current_action.value.on_mouse_release(event, APP_CONTEXT) 
+        if event.state == 256:
+            if APP_CONTEXT.current_action:
+                APP_CONTEXT.current_action.value.on_mouse_release(event, APP_CONTEXT) 
 
 def mouseMotionHandler(event):
     if event.widget is APP_CONTEXT.canvas:
         if event.state == 256:
             if APP_CONTEXT.current_action:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
-
-def mouseButton3PressHandler(event):
-    canv = event.widget
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
     APP_CONTEXT.canvas.config(cursor = cursor_type)
@@ -73,7 +71,7 @@ if __name__=="__main__":
     APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
     APP_CONTEXT.canvas.bind("<Motion>", mouseMotionHandler)
     APP_CONTEXT.canvas.bind("<Button-1>", mouseButton1PressHandler)
-    APP_CONTEXT.canvas.bind("<Button-3>", mouseButton3PressHandler)
+    APP_CONTEXT.canvas.bind("<ButtonRelease>", mouseButton1ReleaseHandler)
 
     APP_CONTEXT.canvas.pack()
     button_change.pack(side=LEFT)    

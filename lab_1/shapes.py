@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-@dataclass()
+@dataclass(frozen=True)
 class Shape:
     id: str
 
-@dataclass()
+@dataclass(frozen=True)
 class Line(Shape):
     start_x: int
     start_y: int
