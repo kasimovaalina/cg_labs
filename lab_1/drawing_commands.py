@@ -19,6 +19,5 @@ def on_line_drawing(event, context):
 
 def line_drawing_complete(event, context):
     if context.current_line:
-        print(context.current_line)
         context.widgets.add(context.current_line)
         context.current_line = None 
