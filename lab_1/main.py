@@ -6,6 +6,7 @@ from action import Action
 from drawing_commands import *
 from moving_commands import *
 from changing_commands import *
+from delete_command import *
 from app_context import AppContext
 import uuid
 import logging
@@ -21,6 +22,7 @@ class ActionType(Enum):
     PENCIL = Action(create_line, on_line_drawing, line_drawing_complete )
     MOVE = Action(move_line, on_line_moving, line_moving_complete)
     CHANGE = Action(change_line, on_line_changing, line_changing_complete)
+    DELETE = Action(delete_line, None, None)
     
 def keyPressHandler(event):
     print(event.char, 'код =', event.keycode)
@@ -55,15 +57,12 @@ if __name__=="__main__":
     pencil_img = PhotoImage(file = r"pencil.png")
     move_img = PhotoImage(file = r"move.png")
     change_img = PhotoImage(file = r"regular.png")
+    delete_img = PhotoImage(file = r"delete.png")
 
     button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
-    # button_create['command'] = lambda: APP_CONTEXT.current_mode = Actions.PENCIL
-
-
     button_move = Button(image=move_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MOVE, "fleur"))
-    # button_create['command'] = lambda: APP_CONTEXT.current_mode = Actions.MOVE 
-
     button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
+    button_delete = Button(image=delete_img, width=100, height=100, command=lambda:actvate_mode(ActionType.DELETE , "X_cursor"))
 
     APP_CONTEXT.canvas["width"] = 600
     APP_CONTEXT.canvas["height"] = 600
@@ -77,6 +76,7 @@ if __name__=="__main__":
     button_change.pack(side=LEFT)    
     button_create.pack(side=LEFT)
     button_move.pack(side=LEFT)
+    button_delete.pack(side=LEFT)
     
     
 
