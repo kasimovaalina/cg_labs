@@ -18,8 +18,6 @@ def match_with(target_x,target_y, x,y,radius=10):
     to_x = x + radius
     from_y = y - radius
     to_y = y + radius
-    LOGGER.debug(f"Target x: {target_x}, From: {from_x}, To: {to_x}")
-    LOGGER.debug(f"Target y: {target_y}, From: {from_y}, To: {to_y}")
     return in_range_closed(target_x, from_x, to_x) and in_range_closed(target_y, from_y, to_y)
 
 def in_range_closed(n, start, end):
@@ -27,14 +25,16 @@ def in_range_closed(n, start, end):
 
 def change_line(event, context: AppContext):
     # probably will cause a problem when choosing a line among many others
-    matched_line_id = context.canvas.find_closest(event.x, event.y)
+    matched_line_id = context.canvas.find_closest(event.x, event.y)[0]
     coords = context.canvas.coords(matched_line_id)
     context.canvas.delete(matched_line_id)
+
     line_id = context.canvas.create_line(coords[0],coords[1], coords[2],coords[3])
     line = Line(line_id, coords[0],coords[1], coords[2],coords[2])
     context.current_line = line
 
-# redrawing it
+    context.widgets.remove(find_in_set(matched_line_id, context.widgets))
+    
 def on_line_changing(event, context: AppContext):
     if context.current_line:
         start_x = context.current_line.start_x
@@ -44,7 +44,6 @@ def on_line_changing(event, context: AppContext):
         line = Line(line_id, start_x, start_y, event.x, event.y)
         context.current_line = line
 
-# saving it
 def line_changing_complete(event, context: AppContext):
     if context.current_line:
         context.widgets.add(context.current_line)
