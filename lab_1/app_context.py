@@ -7,5 +7,6 @@ class AppContext:
     def __init__(self):
         self.current_action: Action = None
         self.canvas: Canvas = None
+        self.status_bar: Label = None
         self.widgets: set[Shape] = set()
         self.current_line: Line = None

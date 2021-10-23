@@ -23,6 +23,7 @@ class ActionType(Enum):
     MOVE = Action(move_line, on_line_moving, line_moving_complete)
     CHANGE = Action(change_line, on_line_changing, line_changing_complete)
     DELETE = Action(delete_line, None, None)
+    FOCUS = Action(None, None, None)
     
 def keyPressHandler(event):
     print(event.char, 'код =', event.keycode)
@@ -44,6 +45,7 @@ def mouseMotionHandler(event):
         if event.state == 256:
             if APP_CONTEXT.current_action:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
+        APP_CONTEXT.status_bar.config(text=f"X: {event.x}, Y: {event.y}")
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
     APP_CONTEXT.canvas.config(cursor = cursor_type)
@@ -54,15 +56,19 @@ if __name__=="__main__":
     tk.resizable(0,0)
     
     APP_CONTEXT.canvas = Canvas(tk, bg = 'white', cursor = 'arrow')
+    APP_CONTEXT.status_bar = Label(text="X: , Y: ")
+
     pencil_img = PhotoImage(file = r"pencil.png")
     move_img = PhotoImage(file = r"move.png")
     change_img = PhotoImage(file = r"regular.png")
     delete_img = PhotoImage(file = r"delete.png")
+    focus_img = PhotoImage(file=r"focus.png")
 
     button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
     button_move = Button(image=move_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MOVE, "fleur"))
     button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
     button_delete = Button(image=delete_img, width=100, height=100, command=lambda:actvate_mode(ActionType.DELETE , "X_cursor"))
+    button_focus = Button(image=focus_img, width=100, height=100, command=lambda:actvate_mode(ActionType.FOCUS , "question_arrow"))
 
     APP_CONTEXT.canvas["width"] = 600
     APP_CONTEXT.canvas["height"] = 600
@@ -73,11 +79,11 @@ if __name__=="__main__":
     APP_CONTEXT.canvas.bind("<ButtonRelease>", mouseButton1ReleaseHandler)
 
     APP_CONTEXT.canvas.pack()
+    APP_CONTEXT.status_bar.pack(side=BOTTOM)
     button_change.pack(side=LEFT)    
     button_create.pack(side=LEFT)
     button_move.pack(side=LEFT)
     button_delete.pack(side=LEFT)
+    button_focus.pack(side=LEFT)
     
-    
-
     tk.mainloop()
