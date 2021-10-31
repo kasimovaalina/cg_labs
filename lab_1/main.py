@@ -21,7 +21,7 @@ APP_CONTEXT = AppContext()
 class ActionType(Enum):
     PENCIL = Action(create_line, on_line_drawing, line_drawing_complete )
     MOVE = Action(move_line, on_line_moving, line_moving_complete)
-    CHANGE = Action(change_line, on_line_changing, line_changing_complete)
+    CHANGE = Action(start_change_line, on_line_changing, line_changing_complete)
     DELETE = Action(delete_line, None, None)
     FOCUS = Action(None, None, None)
     

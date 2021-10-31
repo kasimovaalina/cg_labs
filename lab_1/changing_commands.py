@@ -23,7 +23,7 @@ def match_with(target_x,target_y, x,y,radius=10):
 def in_range_closed(n, start, end):
     return n >= start and n <= end
 
-def change_line(event, context: AppContext):
+def start_change_line(event, context: AppContext):
     # probably will cause a problem when choosing a line among many others
     matched_line_id = context.canvas.find_closest(event.x, event.y)[0]
     coords = context.canvas.coords(matched_line_id)
@@ -46,5 +46,5 @@ def on_line_changing(event, context: AppContext):
 
 def line_changing_complete(event, context: AppContext):
     if context.current_line:
-        context.widgets.add(context.current_line)
+        context.widgets.append(context.current_line)
         context.current_line = None 

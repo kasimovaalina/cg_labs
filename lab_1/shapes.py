@@ -1,12 +1,32 @@
 from dataclasses import dataclass
+from typing import Tuple
 
-@dataclass(frozen=True)
+@dataclass()
 class Shape:
     id: str
 
-@dataclass(frozen=True)
+@dataclass()
 class Line(Shape):
     start_x: int
     start_y: int
     end_x: int
     end_y: int
+
+
+    def left_top_boundary(self) -> Tuple[int, int]:
+        left_x = min(self.start_x, self.end_x)
+        top_y = min(self.start_y, self.end_y)
+        return (left_x, top_y)
+
+    def update_points(self, s_x,s_y, e_x,e_y):
+        self.start_x = s_x
+        self.start_y = s_y
+        self.end_x = e_x
+        self.end_y = e_y
+
+    
+    def update_points_2(self, diff_x, diff_y):
+        self.start_x -= diff_x
+        self.start_y -= diff_y
+        self.end_x -= diff_x
+        self.end_y -= diff_y
