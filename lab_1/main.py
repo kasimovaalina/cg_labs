@@ -8,6 +8,7 @@ from moving_commands import *
 from changing_commands import *
 from delete_command import *
 from app_context import AppContext
+from mirror_command import *
 import uuid
 import logging
 
@@ -24,6 +25,7 @@ class ActionType(Enum):
     CHANGE = Action(start_change_line, on_line_changing, line_changing_complete)
     DELETE = Action(delete_line, None, None)
     FOCUS = Action(None, None, None)
+    MIRROR = Action(mirror_line, None, None)
     
 def keyPressHandler(event):
     print(event.char, 'код =', event.keycode)
@@ -63,14 +65,16 @@ if __name__=="__main__":
     change_img = PhotoImage(file = r"regular.png")
     delete_img = PhotoImage(file = r"delete.png")
     focus_img = PhotoImage(file=r"focus.png")
+    mirror_img = PhotoImage(file=r"mirror.png")
 
     button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
     button_move = Button(image=move_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MOVE, "fleur"))
     button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
     button_delete = Button(image=delete_img, width=100, height=100, command=lambda:actvate_mode(ActionType.DELETE , "X_cursor"))
     button_focus = Button(image=focus_img, width=100, height=100, command=lambda:actvate_mode(ActionType.FOCUS , "question_arrow"))
+    button_mirror = Button(image= mirror_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MIRROR , "target"))
 
-    APP_CONTEXT.canvas["width"] = 600
+    APP_CONTEXT.canvas["width"] = 700
     APP_CONTEXT.canvas["height"] = 600
 
     APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
@@ -85,5 +89,6 @@ if __name__=="__main__":
     button_move.pack(side=LEFT)
     button_delete.pack(side=LEFT)
     button_focus.pack(side=LEFT)
+    button_mirror.pack(side=LEFT)
     
     tk.mainloop()
