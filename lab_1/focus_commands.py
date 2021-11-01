@@ -23,19 +23,6 @@ def focus_on_line(event, context: AppContext):
     else:
         context.current_line = None
 
-def on_focus(event, context: AppContext):
-    if (context.current_line):
-        matched_line = context.current_line
-        a_coefficent = (matched_line.end_y - matched_line.start_y)
-        b_coefficent = -(matched_line.end_x - matched_line.start_x)
-        c_coefficent = - matched_line.end_x * (matched_line.end_y - matched_line.start_y) + (matched_line.end_x - matched_line.start_x)*matched_line.end_y 
-
-        LOGGER.debug(f"a : {a_coefficent} b: {b_coefficent} c: {c_coefficent}")
-
-        context.canvas.itemconfig(matched_line.id, fill="green")
-        context.status_bar.config(text=f"{a_coefficent}x + ({b_coefficent})y + ({c_coefficent}) = 0")
-
-
 def release_focus(event, context: AppContext):
     if context.current_line:
         context.canvas.itemconfig(context.current_line.id, fill="black")
