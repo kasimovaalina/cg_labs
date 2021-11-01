@@ -9,6 +9,7 @@ from changing_commands import *
 from delete_command import *
 from app_context import AppContext
 from mirror_command import *
+from focus_commands import *
 import uuid
 import logging
 
@@ -24,7 +25,7 @@ class ActionType(Enum):
     MOVE = Action(move_line, on_line_moving, line_moving_complete)
     CHANGE = Action(start_change_line, on_line_changing, line_changing_complete)
     DELETE = Action(delete_line, None, None)
-    FOCUS = Action(None, None, None)
+    FOCUS = Action(focus_on_line, None, release_focus)
     MIRROR = Action(mirror_line, None, None)
     
 def keyPressHandler(event):
