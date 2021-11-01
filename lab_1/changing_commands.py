@@ -26,23 +26,45 @@ def in_range_closed(n, start, end):
 def start_change_line(event, context: AppContext):
     # probably will cause a problem when choosing a line among many others
     matched_line_id = context.canvas.find_closest(event.x, event.y)[0]
-    coords = context.canvas.coords(matched_line_id)
+    old_line = find_in_set(matched_line_id,context.widgets)
     context.canvas.delete(matched_line_id)
 
-    line_id = context.canvas.create_line(coords[0],coords[1], coords[2],coords[3])
-    line = Line(line_id, coords[0],coords[1], coords[2],coords[2])
+    line_id = context.canvas.create_line(old_line.start_x,old_line.start_y, old_line.end_x,old_line.end_y)
+    line = Line(line_id, old_line.start_x,old_line.start_y, old_line.end_x,old_line.end_y)
+    
     context.current_line = line
 
-    context.widgets.remove(find_in_set(matched_line_id, context.widgets))
+    diff_x_start = abs(old_line.start_x - event.x)
+    diff_y_start = abs(old_line.start_y - event.y)
+    diff_x_end = abs(old_line.end_x - event.x)
+    diff_y_end = abs(old_line.end_y - event.y)
+
+    if (diff_x_start < diff_x_end or diff_y_start < diff_y_end):
+        context.changing_start = True
+        context.changing_end = False
+    else: 
+        context.changing_end = True
+        context.changing_start = False
+
+    context.widgets.remove(old_line)
+
     
 def on_line_changing(event, context: AppContext):
     if context.current_line:
         start_x = context.current_line.start_x
         start_y = context.current_line.start_y
-        context.canvas.delete(context.current_line.id)
-        line_id = context.canvas.create_line(start_x, start_y, event.x, event.y)
-        line = Line(line_id, start_x, start_y, event.x, event.y)
-        context.current_line = line
+        end_x = context.current_line.end_x
+        end_y = context.current_line.end_y
+        if (context.changing_end):
+            context.canvas.delete(context.current_line.id)
+            line_id = context.canvas.create_line(start_x, start_y, event.x, event.y)
+            line = Line(line_id, start_x, start_y, event.x, event.y)
+            context.current_line = line
+        elif (context.changing_start):
+            context.canvas.delete(context.current_line.id)
+            line_id = context.canvas.create_line(event.x, event.y, end_x, end_y)
+            line = Line(line_id, event.x, event.y, end_x, end_y)
+            context.current_line = line
 
 def line_changing_complete(event, context: AppContext):
     if context.current_line:

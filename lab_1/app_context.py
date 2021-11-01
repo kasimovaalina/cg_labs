@@ -11,3 +11,5 @@ class AppContext:
         self.widgets: List[Shape] = []
         self.current_line: Line = None
         self.path_start: Tuple[int, int] = None
+        self.changing_start: bool = False
+        self.changing_end: bool = False
