@@ -48,7 +48,7 @@ def mouseMotionHandler(event):
         if event.state == 256:
             if APP_CONTEXT.current_action:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
-        APP_CONTEXT.status_bar.config(text=f"X: {event.x}, Y: {event.y}")
+        APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
     APP_CONTEXT.canvas.config(cursor = cursor_type)

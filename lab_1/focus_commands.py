@@ -14,12 +14,17 @@ def focus_on_line(event, context: AppContext):
     matched_line = find_in_set(matched_line_id, context.widgets)
     if matched_line:
         context.current_line = matched_line 
-        a_coefficent = (matched_line.end_y - matched_line.start_y)
-        b_coefficent = -(matched_line.end_x - matched_line.start_x)
-        c_coefficent = - matched_line.end_x * (matched_line.end_y - matched_line.start_y) + (matched_line.end_x - matched_line.start_x)*matched_line.end_y 
+        start_x = matched_line.start_x - context.canvas.winfo_width() / 2
+        start_y = - (matched_line.start_y - context.canvas.winfo_height() / 2)
+        end_x =  matched_line.end_x - context.canvas.winfo_width() / 2
+        end_y = - (matched_line.end_y - context.canvas.winfo_height() / 2)
+
+        a_coefficent = (end_y - start_y)
+        b_coefficent = -(end_x - start_x)
+        c_coefficent = - end_x * (end_y - start_y) + (end_x - start_x) * end_y 
 
         context.canvas.itemconfig(matched_line_id, fill="green")
-        context.status_bar.config(text=f"{a_coefficent}x + ({b_coefficent})y + ({c_coefficent}) = 0")
+        context.status_bar.config(text=f"{int(a_coefficent)}x + ({int(b_coefficent)})y + ({int(c_coefficent)}) = 0")
     else:
         context.current_line = None
 
