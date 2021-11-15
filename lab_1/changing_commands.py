@@ -5,6 +5,7 @@ from typing import *
 from app_context import AppContext
 from moving_commands import find_in_set
 from shapes import Line
+import math
 
 LOGGER = logging.getLogger("changing_commands")
 
@@ -70,3 +71,27 @@ def line_changing_complete(event, context: AppContext):
     if context.current_line:
         context.widgets.append(context.current_line)
         context.current_line = None 
+
+def rotate_line(line:Line, context: AppContext):
+    tempX1 = (context.canvas.winfo_width() / 2) + (((line.start_x - (context.canvas.winfo_width() / 2)) * math.cos(0.175)) + (((line.start_y - (context.canvas.winfo_height() / 2)) * math.sin(0.175))))
+    tempX2 = (context.canvas.winfo_width() / 2) + (((line.end_x - (context.canvas.winfo_width() / 2)) * math.cos(0.175)) + (((line.end_y - (context.canvas.winfo_height() / 2)) * math.sin(0.175))))
+    tempY1 = (context.canvas.winfo_height() / 2) + (-((line.start_x - (context.canvas.winfo_width() / 2)) * math.sin(0.175)) + (((line.start_y - (context.canvas.winfo_height() / 2)) * math.cos(0.175))))
+    tempY2 = (context.canvas.winfo_height()/ 2) + (-((line.end_x - (context.canvas.winfo_width() / 2)) * math.sin(0.175)) + (((line.end_y - (context.canvas.winfo_height() / 2)) * math.cos(0.175))))
+    context.canvas.coords(line.id, tempX1, tempY1, tempX2, tempY2)
+    line.update_points(tempX1, tempY1, tempX2, tempY2)
+    
+def increase_line(line:Line, context: AppContext):
+    new_start_x = line.start_x * 1.1
+    new_start_y = line.start_y * 1.1
+    new_end_x = line.end_x * 1.1
+    new_end_y = line.end_y * 1.1
+    context.canvas.coords(line.id, new_start_x, new_start_y, new_end_x, new_end_y)
+    line.update_points(new_start_x, new_start_y, new_end_x, new_end_y)
+
+def decrease_line(line:Line, context: AppContext):
+    new_start_x = line.start_x / 1.1
+    new_start_y = line.start_y / 1.1
+    new_end_x = line.end_x / 1.1
+    new_end_y = line.end_y / 1.1
+    context.canvas.coords(line.id, new_start_x, new_start_y, new_end_x, new_end_y)
+    line.update_points(new_start_x, new_start_y, new_end_x, new_end_y)

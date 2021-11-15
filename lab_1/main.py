@@ -58,6 +58,32 @@ def shiftPressHandler(event):
     if APP_CONTEXT.current_action == ActionType.SELECT:
         APP_CONTEXT.current_action.value.on_mouse_click(event, APP_CONTEXT, True)
 
+def backSpacePressed(event):
+    if len(APP_CONTEXT.selected_widgets) != 0:
+        for widget in APP_CONTEXT.selected_widgets:
+            APP_CONTEXT.canvas.delete(widget.id)
+            APP_CONTEXT.widgets.remove(find_in_set(widget.id, APP_CONTEXT.widgets))
+        APP_CONTEXT.selected_widgets = []
+
+def mPressed(event):
+    if len(APP_CONTEXT.selected_widgets) != 0:
+        for widget in APP_CONTEXT.selected_widgets:
+            mirror_line(widget, APP_CONTEXT)
+
+def rPressed(event):
+    if len(APP_CONTEXT.selected_widgets) != 0:
+        for widget in APP_CONTEXT.selected_widgets:
+            rotate_line(widget, APP_CONTEXT)
+
+def plusPressed(event):
+    if len(APP_CONTEXT.selected_widgets) != 0:
+        for widget in APP_CONTEXT.selected_widgets:
+            increase_line(widget, APP_CONTEXT)
+
+def minusPressed(event):
+    if len(APP_CONTEXT.selected_widgets) != 0:
+        for widget in APP_CONTEXT.selected_widgets:
+            decrease_line(widget, APP_CONTEXT)
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
     APP_CONTEXT.canvas.config(cursor = cursor_type)
@@ -89,11 +115,16 @@ if __name__=="__main__":
     APP_CONTEXT.canvas["width"] = 700
     APP_CONTEXT.canvas["height"] = 600
 
-    APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
+    # APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
     APP_CONTEXT.canvas.bind("<Motion>", mouseMotionHandler)
     APP_CONTEXT.canvas.bind("<Button-1>", mouseButton1PressHandler)
     APP_CONTEXT.canvas.bind("<ButtonRelease>", mouseButton1ReleaseHandler)
     APP_CONTEXT.canvas.bind("<Shift-1>", shiftPressHandler)
+    tk.bind("m", mPressed)
+    tk.bind("r", rPressed)
+    tk.bind("-", minusPressed)
+    tk.bind("=", plusPressed)
+    tk.bind("<BackSpace>", backSpacePressed)
 
     APP_CONTEXT.canvas.pack()
     APP_CONTEXT.status_bar.pack(side=BOTTOM)

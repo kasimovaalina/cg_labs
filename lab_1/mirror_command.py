@@ -23,4 +23,11 @@ def mirror_line(event, context: AppContext):
 
     context.widgets.remove(old_line)
 
+def mirror_line(line: Line, context: AppContext):
+    new_x_start = (-(line.start_x - context.canvas.winfo_width() / 2)) + context.canvas.winfo_width() / 2
+    new_x_end = (-(line.end_x - context.canvas.winfo_width() / 2)) + context.canvas.winfo_width() / 2
+    line.update_points(new_x_start, line.start_y, new_x_end, line.end_y)
+    context.canvas.coords(line.id, new_x_start, line.start_y, new_x_end, line.end_y)
+
+
 
