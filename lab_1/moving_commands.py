@@ -7,19 +7,16 @@ from shapes import Line
 
 LOGGER = logging.getLogger("moving_commands")
 
-
 def move_line(event, context: AppContext):
-    LOGGER.debug(f"Set: {context.widgets}")
     matched_line_id = context.canvas.find_closest(event.x, event.y)[0]
     matched_line = find_in_set(matched_line_id, context.widgets)
     if matched_line:
-        LOGGER.debug(f"There is the match: {matched_line}")
         context.current_line = matched_line 
         context.path_start = (event.x, event.y)  
     else:
         context.current_line = None
 
-def find_in_set(id, lines):
+def find_in_set(id, lines) -> Line:
     for line in lines:
         if line.id == id:
             return line
@@ -38,7 +35,6 @@ def on_line_moving(event, context):
         
         coords = context.canvas.coords(line.id)
         LOGGER.debug(f"COORDS: {coords}")
-        #line.update_points(*coords)
         line.update_points_2(diff_x, diff_y)
         LOGGER.debug(f"Line after change: {line}")
         context.path_start = (event.x, event.y)

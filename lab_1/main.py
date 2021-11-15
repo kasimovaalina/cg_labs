@@ -20,7 +20,11 @@ LOGGER = logging.getLogger("main")
     
 APP_CONTEXT = AppContext()
 
+
+     
+
 class ActionType(Enum):
+    SELECT = Action(add_to_selection, None, None)
     PENCIL = Action(create_line, on_line_drawing, line_drawing_complete )
     MOVE = Action(move_line, on_line_moving, line_moving_complete)
     CHANGE = Action(start_change_line, on_line_changing, line_changing_complete)
@@ -34,21 +38,26 @@ def keyPressHandler(event):
 
 def mouseButton1PressHandler(event):
     if event.widget is APP_CONTEXT.canvas:
-        if APP_CONTEXT.current_action:
+        if APP_CONTEXT.current_action and APP_CONTEXT.current_action.value.on_mouse_click:
            APP_CONTEXT.current_action.value.on_mouse_click(event, APP_CONTEXT)
 
 def mouseButton1ReleaseHandler(event):
     if event.widget is APP_CONTEXT.canvas:
         if event.state == 256:
-            if APP_CONTEXT.current_action:
-                APP_CONTEXT.current_action.value.on_mouse_release(event, APP_CONTEXT) 
-
+            if APP_CONTEXT.current_action and APP_CONTEXT.current_action.value.on_mouse_release:
+                APP_CONTEXT.current_action.value.on_mouse_release(event, APP_CONTEXT)
+                
 def mouseMotionHandler(event):
     if event.widget is APP_CONTEXT.canvas:
         if event.state == 256:
-            if APP_CONTEXT.current_action:
+            if APP_CONTEXT.current_action and APP_CONTEXT.current_action.value.on_mouse_move:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
         APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
+
+def shiftPressHandler(event):
+    if APP_CONTEXT.current_action == ActionType.SELECT:
+        APP_CONTEXT.current_action.value.on_mouse_click(event, APP_CONTEXT, True)
+
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
     APP_CONTEXT.canvas.config(cursor = cursor_type)
@@ -63,11 +72,13 @@ if __name__=="__main__":
 
     pencil_img = PhotoImage(file = r"pencil.png")
     move_img = PhotoImage(file = r"move.png")
-    change_img = PhotoImage(file = r"regular.png")
+    change_img = PhotoImage(file = r"change.png")
+    group_img = PhotoImage(file = r"regular.png")
     delete_img = PhotoImage(file = r"delete.png")
     focus_img = PhotoImage(file=r"focus.png")
     mirror_img = PhotoImage(file=r"mirror.png")
 
+    button_select = Button(image=group_img, width=100, height=100, command=lambda:actvate_mode(ActionType.SELECT, "hand2"))
     button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
     button_move = Button(image=move_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MOVE, "fleur"))
     button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
@@ -82,9 +93,11 @@ if __name__=="__main__":
     APP_CONTEXT.canvas.bind("<Motion>", mouseMotionHandler)
     APP_CONTEXT.canvas.bind("<Button-1>", mouseButton1PressHandler)
     APP_CONTEXT.canvas.bind("<ButtonRelease>", mouseButton1ReleaseHandler)
+    APP_CONTEXT.canvas.bind("<Shift-1>", shiftPressHandler)
 
     APP_CONTEXT.canvas.pack()
     APP_CONTEXT.status_bar.pack(side=BOTTOM)
+    button_select.pack(side=LEFT)
     button_change.pack(side=LEFT)    
     button_create.pack(side=LEFT)
     button_move.pack(side=LEFT)

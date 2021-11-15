@@ -17,6 +17,13 @@ class Line(Shape):
         left_x = min(self.start_x, self.end_x)
         top_y = min(self.start_y, self.end_y)
         return (left_x, top_y)
+        
+    def get_center(self) -> Tuple[int, int]:
+        center_x = (self.start_x + self.end_x) // 2
+        center_y = (self.start_y + self.end_y) // 2
+        return (center_x, center_y)
+
+    
 
     def update_points(self, s_x,s_y, e_x,e_y):
         self.start_x = s_x
