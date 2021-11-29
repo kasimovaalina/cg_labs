@@ -12,7 +12,6 @@ class Line(Shape):
     end_x: int
     end_y: int
 
-
     def left_top_boundary(self) -> Tuple[int, int]:
         left_x = min(self.start_x, self.end_x)
         top_y = min(self.start_y, self.end_y)
@@ -37,3 +36,10 @@ class Line(Shape):
         self.start_y -= diff_y
         self.end_x -= diff_x
         self.end_y -= diff_y
+
+@dataclass
+class Unreachable_line(Shape):
+    start_x: int
+    start_y: int
+    end_x: int
+    end_y: int

@@ -81,17 +81,17 @@ def rotate_line(line:Line, context: AppContext):
     line.update_points(tempX1, tempY1, tempX2, tempY2)
     
 def increase_line(line:Line, context: AppContext):
-    new_start_x = line.start_x * 1.1
-    new_start_y = line.start_y * 1.1
-    new_end_x = line.end_x * 1.1
-    new_end_y = line.end_y * 1.1
+    new_start_x = (line.start_x - context.canvas.winfo_width() / 2) * 1.1 + context.canvas.winfo_width() / 2
+    new_start_y = (line.start_y - context.canvas.winfo_height() / 2) * 1.1 + context.canvas.winfo_height() / 2
+    new_end_x = (line.end_x - context.canvas.winfo_width() / 2) * 1.1 + context.canvas.winfo_width() / 2
+    new_end_y = (line.end_y - context.canvas.winfo_height() / 2) * 1.1 + context.canvas.winfo_height() / 2
     context.canvas.coords(line.id, new_start_x, new_start_y, new_end_x, new_end_y)
     line.update_points(new_start_x, new_start_y, new_end_x, new_end_y)
 
 def decrease_line(line:Line, context: AppContext):
-    new_start_x = line.start_x / 1.1
-    new_start_y = line.start_y / 1.1
-    new_end_x = line.end_x / 1.1
-    new_end_y = line.end_y / 1.1
+    new_start_x = (line.start_x - context.canvas.winfo_width() / 2) / 1.1 + context.canvas.winfo_width() / 2
+    new_start_y = (line.start_y - context.canvas.winfo_height() / 2) / 1.1 + context.canvas.winfo_height() / 2
+    new_end_x = (line.end_x - context.canvas.winfo_width() / 2) / 1.1 + context.canvas.winfo_width() / 2
+    new_end_y = (line.end_y - context.canvas.winfo_height() / 2) / 1.1 + context.canvas.winfo_height() / 2
     context.canvas.coords(line.id, new_start_x, new_start_y, new_end_x, new_end_y)
     line.update_points(new_start_x, new_start_y, new_end_x, new_end_y)

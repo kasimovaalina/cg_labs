@@ -13,15 +13,14 @@ from focus_commands import *
 import uuid
 import logging
 
+from shapes import Unreachable_line
+
 logging.basicConfig(format="%(asctime)s %(filename)s:%(lineno)s %(name)s::%(funcName)s: %(message)s",
                     datefmt='%Y-%m-%d %H:%M:%S',
                     level=logging.DEBUG)
 LOGGER = logging.getLogger("main")
     
 APP_CONTEXT = AppContext()
-
-
-     
 
 class ActionType(Enum):
     SELECT = Action(add_to_selection, None, None)
@@ -52,7 +51,11 @@ def mouseMotionHandler(event):
         if event.state == 256:
             if APP_CONTEXT.current_action and APP_CONTEXT.current_action.value.on_mouse_move:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
-        APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
+        if (APP_CONTEXT.plane == "XOY"):
+            APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
+        elif (APP_CONTEXT.plane == "XOZ"):
+            APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Z: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
+
 
 def shiftPressHandler(event):
     if APP_CONTEXT.current_action == ActionType.SELECT:
@@ -80,6 +83,48 @@ def plusPressed(event):
         for widget in APP_CONTEXT.selected_widgets:
             increase_line(widget, APP_CONTEXT)
 
+def zPressed(event):
+    if (APP_CONTEXT.plane == "XOY"):
+        APP_CONTEXT.plane = "XOZ"
+        for line in APP_CONTEXT.widgets:
+            APP_CONTEXT.widgets_XOY.append(line)
+            unreachable_line = Unreachable_line(line.id, line.start_x, APP_CONTEXT.canvas.winfo_height()/ 2, line.end_x, APP_CONTEXT.canvas.winfo_height()/ 2)
+            APP_CONTEXT.unreachebale_widgets_XOZ.append(unreachable_line)
+        APP_CONTEXT.canvas.delete("all")
+        APP_CONTEXT.widgets.clear()
+        for line in APP_CONTEXT.unreachebale_widgets_XOZ:
+            line_id = APP_CONTEXT.canvas.create_line(line.start_x, line.start_y, line.end_x, line.end_y)
+            APP_CONTEXT.canvas.itemconfig(line_id, fill="red")
+        APP_CONTEXT.unreachebale_widgets_XOZ.clear()
+        for line in APP_CONTEXT.widgets_XOZ:
+            line_id = APP_CONTEXT.canvas.create_line(line.start_x, line.start_y, line.end_x, line.end_y)
+            temp = Line(line_id, line.start_x, line.start_y, line.end_x, line.end_y)
+            APP_CONTEXT.widgets.append(temp)
+        APP_CONTEXT.widgets_XOZ.clear()
+            
+
+    elif (APP_CONTEXT.plane == "XOZ"):
+        APP_CONTEXT.plane = "XOY"
+        for line in APP_CONTEXT.widgets:
+            APP_CONTEXT.widgets_XOZ.append(line)
+            unreachable_line = Unreachable_line(line.id, line.start_x, APP_CONTEXT.canvas.winfo_height()/ 2, line.end_x, APP_CONTEXT.canvas.winfo_height()/ 2)
+            APP_CONTEXT.unreachebale_widgets_XOY.append(unreachable_line)
+        APP_CONTEXT.canvas.delete("all")
+        APP_CONTEXT.widgets.clear()
+        for line in APP_CONTEXT.unreachebale_widgets_XOY:
+            line_id = APP_CONTEXT.canvas.create_line(line.start_x, line.start_y, line.end_x, line.end_y)
+            APP_CONTEXT.canvas.itemconfig(line_id, fill="red")
+        APP_CONTEXT.unreachebale_widgets_XOY.clear()
+        for line in APP_CONTEXT.widgets_XOY:
+            line_id = APP_CONTEXT.canvas.create_line(line.start_x, line.start_y, line.end_x, line.end_y)
+            temp = Line(line_id, line.start_x, line.start_y, line.end_x, line.end_y)
+            APP_CONTEXT.widgets.append(temp)
+        APP_CONTEXT.widgets_XOY.clear()
+    
+    APP_CONTEXT.plane_status_bar.config(text= "плоскость: " + APP_CONTEXT.plane)
+
+
+
 def minusPressed(event):
     if len(APP_CONTEXT.selected_widgets) != 0:
         for widget in APP_CONTEXT.selected_widgets:
@@ -95,6 +140,7 @@ if __name__=="__main__":
     
     APP_CONTEXT.canvas = Canvas(tk, bg = 'white', cursor = 'arrow')
     APP_CONTEXT.status_bar = Label(text="X: , Y: ")
+    APP_CONTEXT.plane_status_bar = Label(text= "плоскость: " + APP_CONTEXT.plane)
 
     pencil_img = PhotoImage(file = r"pencil.png")
     move_img = PhotoImage(file = r"move.png")
@@ -112,7 +158,7 @@ if __name__=="__main__":
     button_focus = Button(image=focus_img, width=100, height=100, command=lambda:actvate_mode(ActionType.FOCUS , "question_arrow"))
     button_mirror = Button(image= mirror_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MIRROR , "target"))
 
-    APP_CONTEXT.canvas["width"] = 700
+    APP_CONTEXT.canvas["width"] = 600
     APP_CONTEXT.canvas["height"] = 600
 
     # APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
@@ -120,6 +166,7 @@ if __name__=="__main__":
     APP_CONTEXT.canvas.bind("<Button-1>", mouseButton1PressHandler)
     APP_CONTEXT.canvas.bind("<ButtonRelease>", mouseButton1ReleaseHandler)
     APP_CONTEXT.canvas.bind("<Shift-1>", shiftPressHandler)
+    tk.bind("z", zPressed)
     tk.bind("m", mPressed)
     tk.bind("r", rPressed)
     tk.bind("-", minusPressed)
@@ -128,12 +175,14 @@ if __name__=="__main__":
 
     APP_CONTEXT.canvas.pack()
     APP_CONTEXT.status_bar.pack(side=BOTTOM)
+    APP_CONTEXT.plane_status_bar.pack(side=BOTTOM)
     button_select.pack(side=LEFT)
     button_change.pack(side=LEFT)    
     button_create.pack(side=LEFT)
     button_move.pack(side=LEFT)
     button_delete.pack(side=LEFT)
     button_focus.pack(side=LEFT)
-    button_mirror.pack(side=LEFT)
+    #button_mirror.pack(side=LEFT)
     
     tk.mainloop()
+
