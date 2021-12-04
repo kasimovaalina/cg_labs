@@ -134,7 +134,6 @@ if __name__=="__main__":
     group_img = PhotoImage(file = r"regular.png")
     delete_img = PhotoImage(file = r"delete.png")
     focus_img = PhotoImage(file=r"focus.png")
-    mirror_img = PhotoImage(file=r"mirror.png")
     save_img = PhotoImage(file=r"save.png")
     load_img = PhotoImage(file=r"load.png")
 
@@ -144,11 +143,10 @@ if __name__=="__main__":
     button_change = Button(image=change_img, width=100, height=100, command=lambda:actvate_mode(ActionType.CHANGE , "sizing"))
     button_delete = Button(image=delete_img, width=100, height=100, command=lambda:actvate_mode(ActionType.DELETE , "X_cursor"))
     button_focus = Button(image=focus_img, width=100, height=100, command=lambda:actvate_mode(ActionType.FOCUS , "question_arrow"))
-    button_mirror = Button(image= mirror_img, width=100, height=100, command=lambda:actvate_mode(ActionType.MIRROR , "target"))
     button_save = Button(image=save_img, width=100, height=100, command=save_scene)
     button_load = Button(image=load_img, width=100, height=100, command=load_scene)
 
-    APP_CONTEXT.canvas["width"] = 900
+    APP_CONTEXT.canvas["width"] = 800
     APP_CONTEXT.canvas["height"] = 600
 
     # APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
@@ -171,7 +169,6 @@ if __name__=="__main__":
     button_move.pack(side=LEFT)
     button_delete.pack(side=LEFT)
     button_focus.pack(side=LEFT)
-    button_mirror.pack(side=LEFT)
     button_save.pack(side=LEFT)
     button_load.pack(side=LEFT)
     
