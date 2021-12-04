@@ -36,10 +36,3 @@ class Line(Shape):
         self.start_y -= diff_y
         self.end_x -= diff_x
         self.end_y -= diff_y
-
-@dataclass
-class Unreachable_line(Shape):
-    start_x: int
-    start_y: int
-    end_x: int
-    end_y: int
