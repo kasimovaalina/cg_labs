@@ -14,4 +14,6 @@ class AppContext:
         self.path_start: Tuple[int, int] = None
         self.changing_start: bool = False
         self.changing_end: bool = False
-        self.plane: str = "XOY"
+        self.current_polygon: Polygon = None
+        self.smooth_polygon_id: str = None
+        self.current_point_number: int = None

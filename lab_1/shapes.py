@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import List, Tuple
 
 @dataclass()
 class Shape:
@@ -36,3 +36,12 @@ class Line(Shape):
         self.start_y -= diff_y
         self.end_x -= diff_x
         self.end_y -= diff_y
+
+@dataclass
+class Polygon(Shape):
+    x_coordinates: List
+    y_coordinates: List
+
+    def update_point(self, new_x, new_y, index):
+        self.x_coordinates[index] = new_x
+        self.y_coordinates[index] = new_y

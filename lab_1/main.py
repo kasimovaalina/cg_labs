@@ -11,6 +11,7 @@ from delete_command import *
 from app_context import AppContext
 from mirror_command import *
 from focus_commands import *
+from spline import draw_start_shape, on_changing_spline, start_spline, changing_spline_finfished, erase_spline
 import logging
 import datetime
 
@@ -29,6 +30,7 @@ class ActionType(Enum):
     DELETE = Action(delete_line, None, None)
     FOCUS = Action(focus_on_line, None, release_focus)
     MIRROR = Action(mirror_line, None, None)
+    SPLINE = Action(start_spline, on_changing_spline, changing_spline_finfished)
     
 def keyPressHandler(event):
     print(event.char, 'код =', event.keycode)
@@ -50,10 +52,7 @@ def mouseMotionHandler(event):
         if event.state == 256:
             if APP_CONTEXT.current_action and APP_CONTEXT.current_action.value.on_mouse_move:
                 APP_CONTEXT.current_action.value.on_mouse_move(event, APP_CONTEXT)
-        if (APP_CONTEXT.plane == "XOY"):
-            APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
-        elif (APP_CONTEXT.plane == "XOZ"):
-            APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Z: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
+        APP_CONTEXT.status_bar.config(text=f"X: {event.x - APP_CONTEXT.canvas.winfo_width() / 2}, Y: {-(event.y - APP_CONTEXT.canvas.winfo_height()/ 2)}")
 
 
 def shiftPressHandler(event):
@@ -94,11 +93,16 @@ def minusPressed(event):
             decrease_line(widget, APP_CONTEXT)
 
 def actvate_mode(current_action: ActionType, cursor_type: str):
+    if current_action is ActionType.SPLINE:
+        draw_start_shape(APP_CONTEXT)
+    else:
+        erase_spline(APP_CONTEXT)
     APP_CONTEXT.canvas.config(cursor = cursor_type)
     APP_CONTEXT.current_action = current_action
 
 def save_scene():
     global APP_CONTEXT
+    APP_CONTEXT.status_bar.config(text="Сцена сохранена")
     file_name = filedialog.asksaveasfilename(confirmoverwrite=False)
     file = open(file_name,"w")
     for line in APP_CONTEXT.widgets:
@@ -108,6 +112,7 @@ def save_scene():
 
 def load_scene():
     global APP_CONTEXT
+    APP_CONTEXT.status_bar.config(text="Сцена загружена")
     APP_CONTEXT.widgets.clear()
     APP_CONTEXT.canvas.delete("all")
     file_name = filedialog.askopenfilename()
@@ -136,6 +141,7 @@ if __name__=="__main__":
     focus_img = PhotoImage(file=r"focus.png")
     save_img = PhotoImage(file=r"save.png")
     load_img = PhotoImage(file=r"load.png")
+    spline_img = PhotoImage(file=r"spline.png")
 
     button_select = Button(image=group_img, width=100, height=100, command=lambda:actvate_mode(ActionType.SELECT, "hand2"))
     button_create = Button(image=pencil_img, width=100, height=100, command=lambda:actvate_mode(ActionType.PENCIL, "pencil"))
@@ -145,8 +151,9 @@ if __name__=="__main__":
     button_focus = Button(image=focus_img, width=100, height=100, command=lambda:actvate_mode(ActionType.FOCUS , "question_arrow"))
     button_save = Button(image=save_img, width=100, height=100, command=save_scene)
     button_load = Button(image=load_img, width=100, height=100, command=load_scene)
+    button_spline = Button(image=spline_img, width=100, height=100, command=lambda: actvate_mode(ActionType.SPLINE, "arrow"))
 
-    APP_CONTEXT.canvas["width"] = 800
+    APP_CONTEXT.canvas["width"] = 900
     APP_CONTEXT.canvas["height"] = 600
 
     # APP_CONTEXT.canvas.bind("<KeyPress>", keyPressHandler)
@@ -171,6 +178,7 @@ if __name__=="__main__":
     button_focus.pack(side=LEFT)
     button_save.pack(side=LEFT)
     button_load.pack(side=LEFT)
+    button_spline.pack(side=LEFT)
     
     tk.mainloop()
 
