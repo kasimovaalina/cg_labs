@@ -7,7 +7,7 @@ from shapes import Line, Polygon
 
 def draw_start_shape(context: AppContext):
     context.canvas.delete("all")
-    x_s = [50, 100, 150, 200, 300, 400, 450, 600]
+    x_s = [50, 134, 150, 267, 312, 433, 450, 612]
     y_s = [50, 120, 200, 310, 410, 500, 110, 600]
     id = context.canvas.create_polygon(x_s[0], y_s[0], x_s[1], y_s[1],x_s[2], y_s[2],x_s[3], y_s[3],x_s[4], y_s[4],x_s[5], y_s[5],x_s[6], y_s[6], x_s[7], y_s[7], smooth="1", fill='', outline='red')
     id_1 = context.canvas.create_polygon(x_s[0], y_s[0], x_s[1], y_s[1],x_s[2], y_s[2],x_s[3], y_s[3],x_s[4], y_s[4],x_s[5], y_s[5],x_s[6], y_s[6], x_s[7], y_s[7], smooth="0", fill='', outline="black")
