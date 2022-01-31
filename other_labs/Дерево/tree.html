@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <style type="text/css">
+      body { margin: 20px; font-family: arial,verdana,helvetica; background: #fff;}
+      canvas { border: 2px solid #000; float: left; margin-right: 20px; margin-bottom: 20px; }
+      p { margin-bottom: 20px; }
+      button {margin-top: 20px;}
+      input {margin-left: 20px;}
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="tree" width="500" height="700"></canvas>
+      <p>Угол<input type="range" min="3" max="15" step="1" id="angle_parameter" 
+     oninput="setAngleParameter()" value="3"></p1>
+      <p>Глубина рекурсии<input type="range" min="1" max="10" step="1" id="recursion_parameter" 
+      oninput="setRecursionParameter()" value="2"></p1>
+      <p>Толщина пера<input type="range" min="1" max="8" step="1" id="width_parameter" 
+        oninput="setWidthParametr()" value="2"></p>
+      <p> Цвет коры <input type="color" id='bark-color' oninput="setBarkColor()" value="#604020"> </p>
+      <p> Цвет листвы <input type="color" id='leaf-color' oninput="setLeafColor()" value="#366345"> </p>
+      <button id ="generate-button">Нарисовать</button>
+      <script src="action.js"></script>
+    </div>
+  </body>
+</html>
